@@ -1,46 +1,44 @@
-CREATE DATABASE library_management_system;
-
-USE library_management_system;
-
-CREATE TABLE Author (
+-- Table: authors
+CREATE TABLE authors (
     author_id INT AUTO_INCREMENT PRIMARY KEY,
-    author_name VARCHAR(100)
+    author_name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Book (
+-- Table: categories
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL
+);
+
+-- Table: books
+CREATE TABLE books (
     book_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255),
+    title VARCHAR(255) NOT NULL,
+    isbn VARCHAR(20) NOT NULL,
     author_id INT,
-    quantity INT,
-    FOREIGN KEY (author_id) REFERENCES Author(author_id)
+    category_id INT,
+    published_year INT,
+    FOREIGN KEY (author_id) REFERENCES authors(author_id),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
-CREATE TABLE Member (
-    member_id INT AUTO_INCREMENT PRIMARY KEY,
-    member_name VARCHAR(100)
+-- Table: users
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    role ENUM('ADMIN', 'USER') DEFAULT 'USER'
 );
 
-CREATE TABLE Issue (
-    issue_id INT AUTO_INCREMENT PRIMARY KEY,
+-- Table: transactions
+CREATE TABLE transactions (
+    transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
     book_id INT,
-    member_id INT,
     issue_date DATE,
-    due_date DATE,
-    FOREIGN KEY (book_id) REFERENCES Book(book_id),
-    FOREIGN KEY (member_id) REFERENCES Member(member_id)
-);
-
-CREATE TABLE `Return` (
-    return_id INT AUTO_INCREMENT PRIMARY KEY,
-    issue_id INT,
     return_date DATE,
-    fine_amount DECIMAL(10, 2),
-    FOREIGN KEY (issue_id) REFERENCES Issue(issue_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id)
 );
 
-CREATE TABLE Fine (
-    fine_id INT AUTO_INCREMENT PRIMARY KEY,
-    member_id INT,
-    fine_amount DECIMAL(10, 2),
-    FOREIGN KEY (member_id) REFERENCES Member(member_id)
-);
